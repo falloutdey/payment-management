@@ -1,5 +1,11 @@
 package com.desafio.paymentmanagement.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.desafio.paymentmanagement.dto.CreatePaymentRequest;
 import com.desafio.paymentmanagement.dto.PaymentResponse;
 import com.desafio.paymentmanagement.dto.UpdatePaymentStatusRequest;
@@ -11,19 +17,17 @@ import com.desafio.paymentmanagement.mapper.PaymentMapper;
 import com.desafio.paymentmanagement.model.Payment;
 import com.desafio.paymentmanagement.repository.PaymentRepository;
 import com.desafio.paymentmanagement.repository.PaymentSpecification;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
+
+    public PaymentService(PaymentRepository paymentRepository, PaymentMapper paymentMapper) {
+        this.paymentRepository = paymentRepository;
+        this.paymentMapper = paymentMapper;
+    }
 
     @Transactional
     public PaymentResponse createPayment(CreatePaymentRequest request) {
@@ -56,7 +60,7 @@ public class PaymentService {
 
         if (payment.getStatus() != PaymentStatus.PENDENTE_DE_PROCESSAMENTO) {
             throw new InvalidPaymentStatusException(
-                    "Somente pagamentos com status PENDENTE DE PROCESSAMENTO podem ser excluídos.");
+                    "Somente pagamentos com status PENDENTE_DE_PROCESSAMENTO podem ser excluidos.");
         }
 
         payment.setStatus(PaymentStatus.INATIVO);
@@ -74,12 +78,12 @@ public class PaymentService {
 
         if (requiresCard && !hasCard) {
             throw new InvalidPaymentException(
-                    "O número do cartão é obrigatório para o método de pagamento: " + request.getPaymentMethod());
+                    "O numero do cartao e obrigatorio para o metodo de pagamento: " + request.getPaymentMethod());
         }
 
         if (!requiresCard && hasCard) {
             throw new InvalidPaymentException(
-                    "O número do cartão não deve ser informado para o método de pagamento: " + request.getPaymentMethod());
+                    "O numero do cartao nao deve ser informado para o metodo de pagamento: " + request.getPaymentMethod());
         }
     }
 
@@ -88,27 +92,27 @@ public class PaymentService {
             case PENDENTE_DE_PROCESSAMENTO:
                 if (next != PaymentStatus.PROCESSADO_COM_SUCESSO && next != PaymentStatus.PROCESSADO_COM_FALHA) {
                     throw new InvalidPaymentStatusException(
-                            "Pagamento PENDENTE DE PROCESSAMENTO só pode ser alterado para PROCESSADO COM SUCESSO ou PROCESSADO COM FALHA.");
+                            "Pagamento PENDENTE_DE_PROCESSAMENTO so pode ser alterado para PROCESSADO_COM_SUCESSO ou PROCESSADO_COM_FALHA.");
                 }
                 break;
 
             case PROCESSADO_COM_SUCESSO:
                 throw new InvalidPaymentStatusException(
-                        "Pagamento PROCESSADO COM SUCESSO não pode ter seu status alterado.");
+                        "Pagamento PROCESSADO_COM_SUCESSO nao pode ter seu status alterado.");
 
             case PROCESSADO_COM_FALHA:
                 if (next != PaymentStatus.PENDENTE_DE_PROCESSAMENTO) {
                     throw new InvalidPaymentStatusException(
-                            "Pagamento PROCESSADO COM FALHA só pode ser alterado para PENDENTE DE PROCESSAMENTO.");
+                            "Pagamento PROCESSADO_COM_FALHA so pode ser alterado para PENDENTE_DE_PROCESSAMENTO.");
                 }
                 break;
 
             case INATIVO:
                 throw new InvalidPaymentStatusException(
-                        "Pagamento INATIVO não pode ter seu status alterado.");
+                        "Pagamento INATIVO nao pode ter seu status alterado.");
 
             default:
-                throw new InvalidPaymentStatusException("Transição de status inválida.");
+                throw new InvalidPaymentStatusException("Transicao de status invalida.");
         }
     }
 }
