@@ -30,3 +30,20 @@ Para refletir as decisões de design, a aplicação foi dividida nos seguintes p
 * **`repository.PaymentRepository` & `PaymentSpecification`**: Interface de persistência e classe utilitária (Criteria API) responsável por aplicar os filtros dinâmicos de busca (código, documento ou status).
 * **`model.Payment`**: Entidade JPA. Utiliza `@PrePersist` e `@PreUpdate` para gerenciar automaticamente as datas de criação e atualização, além de fixar o status inicial como `PENDENTE_DE_PROCESSAMENTO`.
 * **`exception.GlobalExceptionHandler`**: Intercepta falhas de validação de DTOs e regras de negócio violadas (ex: `InvalidPaymentStatusException`), formatando a resposta para o objeto `ErrorResponse`.
+
+## Como Executar
+
+1. Faça o clone do repositório:
+   `git clone https://github.com/SEU_USUARIO/payment-management.git`
+   `cd payment-management`
+
+2. Para executar a API, utilize o Maven Wrapper embutido:
+   * No Linux/Mac: `./mvnw spring-boot:run`
+   * No Windows: `mvnw.cmd spring-boot:run`
+
+3. Para executar os testes automatizados (unitários e de integração):
+   * No Linux/Mac: `./mvnw test`
+   * No Windows: `mvnw.cmd test`
+
+4. Acessos da Aplicação:
+   * A API estará disponível na porta 8083: `http://localhost:8083/api/payments`
