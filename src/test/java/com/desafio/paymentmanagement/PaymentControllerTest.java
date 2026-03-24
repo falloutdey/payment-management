@@ -39,9 +39,7 @@ class PaymentControllerTest {
 
     private static final String BASE_URL = "/api/payments";
 
-    // -------------------------------------------------------------------------
     // POST - criar pagamento
-    // -------------------------------------------------------------------------
 
     @Test
     @DisplayName("POST /api/payments - cria pagamento PIX com sucesso")
@@ -104,9 +102,7 @@ class PaymentControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    // -------------------------------------------------------------------------
     // PATCH - atualizar status
-    // -------------------------------------------------------------------------
 
     @Test
     @DisplayName("PATCH /api/payments/{id}/status - PENDENTE -> SUCESSO")
@@ -154,9 +150,7 @@ class PaymentControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // -------------------------------------------------------------------------
     // GET - listar e filtrar
-    // -------------------------------------------------------------------------
 
     @Test
     @DisplayName("GET /api/payments - lista todos os pagamentos")
@@ -199,9 +193,7 @@ class PaymentControllerTest {
                 .andExpect(jsonPath("$[*].payerDocument", everyItem(equalTo("12345678900"))));
     }
 
-    // -------------------------------------------------------------------------
     // DELETE - exclusão lógica
-    // -------------------------------------------------------------------------
 
     @Test
     @DisplayName("DELETE /api/payments/{id} - exclusão lógica de pagamento PENDENTE")
@@ -232,9 +224,7 @@ class PaymentControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // -------------------------------------------------------------------------
     // Helpers
-    // -------------------------------------------------------------------------
 
     private Long createPixPayment() throws Exception {
         MvcResult result = mockMvc.perform(post(BASE_URL)

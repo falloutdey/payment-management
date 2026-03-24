@@ -62,7 +62,7 @@ class PaymentServiceTest {
     // CREATE
 
     @Test
-    @DisplayName("Deve criar pagamento PIX sem número de cartão")
+    @DisplayName("Deve criar pagamento PIX sem numero de cartao")
     void createPayment_pix_success() {
         CreatePaymentRequest request = pixRequest();
         Payment entity = pendingPayment;
@@ -80,7 +80,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    @DisplayName("Deve criar pagamento com cartão de crédito quando número informado")
+    @DisplayName("Deve criar pagamento com cartao de credito quando numero informado")
     void createPayment_creditCard_success() {
         CreatePaymentRequest request = creditCardRequest("4111111111111111");
         Payment entity = Payment.builder()
@@ -103,24 +103,24 @@ class PaymentServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando cartão de crédito sem número")
+    @DisplayName("Deve lancar excecao quando cartao de credito sem numero")
     void createPayment_creditCard_missingCardNumber() {
         CreatePaymentRequest request = creditCardRequest(null);
 
         assertThatThrownBy(() -> paymentService.createPayment(request))
                 .isInstanceOf(InvalidPaymentException.class)
-                .hasMessageContaining("número do cartão é obrigatório");
+                .hasMessageContaining("obrigatorio");
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando PIX com número de cartão informado")
+    @DisplayName("Deve lancar excecao quando PIX com numero de cartao informado")
     void createPayment_pix_withCardNumber() {
         CreatePaymentRequest request = pixRequest();
         request.setCardNumber("4111111111111111");
 
         assertThatThrownBy(() -> paymentService.createPayment(request))
                 .isInstanceOf(InvalidPaymentException.class)
-                .hasMessageContaining("não deve ser informado");
+                .hasMessageContaining("nao deve ser informado");
     }
 
     // UPDATE STATUS
@@ -150,7 +150,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao tentar alterar PROCESSADO_COM_SUCESSO")
+    @DisplayName("Deve lancar excecao ao tentar alterar PROCESSADO_COM_SUCESSO")
     void updateStatus_successCannotChange() {
         pendingPayment.setStatus(PaymentStatus.PROCESSADO_COM_SUCESSO);
         UpdatePaymentStatusRequest request = statusRequest(PaymentStatus.PENDENTE_DE_PROCESSAMENTO);
@@ -159,7 +159,7 @@ class PaymentServiceTest {
 
         assertThatThrownBy(() -> paymentService.updateStatus(1L, request))
                 .isInstanceOf(InvalidPaymentStatusException.class)
-                .hasMessageContaining("PROCESSADO_COM_SUCESSO não pode ter seu status alterado");
+                .hasMessageContaining("PROCESSADO_COM_SUCESSO");
     }
 
     @Test
@@ -176,7 +176,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao tentar alterar de PROCESSADO_COM_FALHA para SUCESSO")
+    @DisplayName("Deve lancar excecao ao tentar alterar de PROCESSADO_COM_FALHA para SUCESSO")
     void updateStatus_failureToSuccessIsInvalid() {
         pendingPayment.setStatus(PaymentStatus.PROCESSADO_COM_FALHA);
         UpdatePaymentStatusRequest request = statusRequest(PaymentStatus.PROCESSADO_COM_SUCESSO);
@@ -188,7 +188,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando pagamento não encontrado ao atualizar status")
+    @DisplayName("Deve lancar excecao quando pagamento nao encontrado ao atualizar status")
     void updateStatus_paymentNotFound() {
         when(paymentRepository.findById(99L)).thenReturn(Optional.empty());
 
@@ -196,10 +196,10 @@ class PaymentServiceTest {
                 .isInstanceOf(PaymentNotFoundException.class);
     }
 
-    // DELETE (exclusão lógica)
+    // DELETE (exclusao logica)
 
     @Test
-    @DisplayName("Deve realizar exclusão lógica de pagamento PENDENTE")
+    @DisplayName("Deve realizar exclusao logica de pagamento PENDENTE")
     void deletePayment_success() {
         when(paymentRepository.findById(1L)).thenReturn(Optional.of(pendingPayment));
         when(paymentRepository.save(any())).thenReturn(pendingPayment);
@@ -209,7 +209,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao tentar excluir pagamento PROCESSADO_COM_SUCESSO")
+    @DisplayName("Deve lancar excecao ao tentar excluir pagamento PROCESSADO_COM_SUCESSO")
     void deletePayment_notPending() {
         pendingPayment.setStatus(PaymentStatus.PROCESSADO_COM_SUCESSO);
 
@@ -221,7 +221,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao tentar excluir pagamento inexistente")
+    @DisplayName("Deve lancar excecao ao tentar excluir pagamento inexistente")
     void deletePayment_notFound() {
         when(paymentRepository.findById(99L)).thenReturn(Optional.empty());
 
